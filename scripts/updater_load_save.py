@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import datetime
 
 # Streamlit configuration
 st.set_page_config(page_title="My App", page_icon="", layout="wide", initial_sidebar_state="collapsed")
@@ -7,20 +8,20 @@ st.set_page_config(page_title="My App", page_icon="", layout="wide", initial_sid
 # Define player data dictionary (replace with your data)
 if 'player_data' not in st.session_state:
   st.session_state['player_data'] = {
-  "player_1": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_2": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_3": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_4": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_5": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_6": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_7": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_8": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_9": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_10": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_11": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_12": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_13": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_14": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
+  "player_1": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_2": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_3": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_4": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_5": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_6": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_7": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_8": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_9": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_10": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_11": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_12": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_13": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_14": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
 }
 
 player_data = st.session_state['player_data']
@@ -59,9 +60,10 @@ def update_data(team_a, team_b, score_a, score_b):
     player_data[player]["goals_for"] += score_b
     player_data[player]["goals_against"] += score_a
 
+#TODO: add function to update goal difference
 
 def load_data():
-  """Loads player data from a CSV file (if it exists)."""
+  # """Loads player data from a CSV file (if it exists)."""
   global player_data  # Declare player_data as global
 
   try:
@@ -72,29 +74,37 @@ def load_data():
     st.success("Player data loaded successfully!")
   except FileNotFoundError:
     st.warning("No player data file found. Using initial data.")
+    # Initial data structure (replace with your actual data)
     player_data = {
-  "player_1": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_2": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_3": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_4": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_5": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_6": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_7": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_8": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_9": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_10": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_11": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_12": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_13": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
-  "player_14": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0},
+  "player_1": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_2": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_3": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_4": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_5": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_6": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_7": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_8": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_9": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_10": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_11": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_12": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_13": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
+  "player_14": {"points": 0, "games_played": 0, "games_won": 0, "games_drawn": 0, "games_lost": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0},
 }
 
 
 def save_data():
-#  Saves player data to a CSV file
+  """Saves player data to a CSV file with a timestamp."""
+
+  # Get current timestamp
+  now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Format timestamp (year-month-day_hour-minute-second)
+
+  # Convert player data to pandas DataFrame
   df = pd.DataFrame.from_dict(player_data, orient='index')
-  df.to_csv("player_data.csv", index=True)
-  print("Player data saved successfully!")
+
+  # Save data to CSV file with timestamp
+  df.to_csv(f"tables/player_data_{now}.csv", index=True)
+  st.success(f"Player data saved to player_data_{now}.csv")
 
 # Streamlit interface
 if st.button("Load Player Data"):
