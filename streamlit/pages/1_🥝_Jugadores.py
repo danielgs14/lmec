@@ -15,7 +15,6 @@ player_filepath = "./tables/player_data.csv"
 columns = ["Nombre", "Puntos", "PJ", "PG", "PP", "PE", "GF", "GC", "GInd"]
 
 def load_player_data():
-def load_player_data():
     if os.path.exists(player_filepath):
         try:
             df = pd.read_csv(player_filepath)
