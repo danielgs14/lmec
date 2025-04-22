@@ -15,14 +15,19 @@ player_filepath = "./tables/player_data.csv"
 columns = ["Nombre", "Puntos", "PJ", "PG", "PP", "PE", "GF", "GC", "GInd"]
 
 def load_player_data():
+def load_player_data():
     if os.path.exists(player_filepath):
-        df = pd.read_csv(player_filepath)
-        for col in columns:
-            if col not in df.columns:
-                df[col] = 0 if col != "name" else ""
-        return df[columns]
+        try:
+            df = pd.read_csv(player_filepath)
+            for col in columns:
+                if col not in df.columns:
+                    df[col] = 0 if col != "name" else ""
+            return df[columns]
+        except pd.errors.EmptyDataError:
+            return pd.DataFrame(columns=columns)
     else:
         return pd.DataFrame(columns=columns)
+
 
 def save_player_data(df):
     df.to_csv(player_filepath, index=False)
