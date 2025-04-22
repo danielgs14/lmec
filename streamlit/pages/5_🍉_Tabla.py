@@ -20,7 +20,7 @@ st.subheader("Tabla")
 
 if os.path.exists(player_filepath):
     current_df = pd.read_csv(player_filepath)
-    current_df = current_df.sort_values(by=["Puntos", "PG", "GF"], ascending=False).reset_index(drop=True)
+    current_df = current_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).reset_index(drop=True)
     st.dataframe(current_df, hide_index=True, use_container_width=True)
 else:
     st.info("No hay datos disponibles.")

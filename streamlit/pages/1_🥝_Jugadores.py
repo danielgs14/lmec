@@ -66,7 +66,7 @@ with st.form("add_player_form"):
 # Display the current player table
 st.subheader("Lista de Jugadores Actuales")
 st.dataframe(
-    player_df.sort_values(by=["Puntos", "PG", "GF"], ascending=False)
+    player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False)
     ,hide_index=True
     ,use_container_width=True
 )
