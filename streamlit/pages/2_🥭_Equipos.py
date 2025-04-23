@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import os
+
+from helpers.sheets_handler import read_player_data, write_team_data
 
 st.set_page_config(
     page_title="Equipos",
@@ -8,18 +9,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-# filepaths
-player_filepath = "./tables/player_data.csv"
-team_filepath = "./tables/match_teams.csv"
+
+# Google Sheet names
+player_sheet_name = "player_data"
+match_teams_sheet_name = "match_teams"
 
 st.title("Equipos")
 
-# Load player names
-if not os.path.exists(player_filepath):
+# Load player names from Google Sheets
+player_data = read_player_data(player_sheet_name)
+player_df = pd.DataFrame(player_data)
+
+if player_df.empty:
     st.warning("No hay jugadores. Añádalos en 🥝 **Jugadores**")
     st.stop()
 
-player_df = pd.read_csv(player_filepath)
 player_names = player_df["Nombre"].tolist()
 
 # Select players for each team
@@ -38,5 +42,5 @@ else:
             "Nombre": team1 + team2,
             "Equipo": ["Equipo 1"] * 6 + ["Equipo 2"] * 6
         })
-        match_df.to_csv(team_filepath, index=False)
+        write_team_data(match_teams_sheet_name, match_df.to_dict(orient="records"))
         st.success("Equipos guardados para la mejenga.")

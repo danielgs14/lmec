@@ -1,46 +1,31 @@
 import streamlit as st
 import pandas as pd
-import os
+from helpers.sheets_handler import read_player_data, write_player_data
 
 st.set_page_config(
     page_title="Jugadores",
-    page_icon=":kiwi:",
+    page_icon=":kiwi-fruit:",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# filepaths
-player_filepath = "./tables/player_data.csv"
 
-columns = ["Nombre", "Puntos", "PJ", "PG", "PP", "PE", "GF", "GC", "GInd"]
+# Define the Google Sheet name
+sheet_name = "player_data"
 
-def load_player_data():
-    if os.path.exists(player_filepath):
-        try:
-            df = pd.read_csv(player_filepath)
-            for col in columns:
-                if col not in df.columns:
-                    df[col] = 0 if col != "name" else ""
-            return df[columns]
-        except pd.errors.EmptyDataError:
-            return pd.DataFrame(columns=columns)
-    else:
-        return pd.DataFrame(columns=columns)
+# Fetch player data from Google Sheets
+player_data = read_player_data(sheet_name)
+player_df = pd.DataFrame(player_data)
 
-
-def save_player_data(df):
-    df.to_csv(player_filepath, index=False)
+# columns = ["Nombre", "Puntos", "PJ", "PG", "PP", "PE", "GF", "GC", "GInd"]
 
 st.title("🍍 Jugadores")
 
-# Load existing or empty DataFrame
-player_df = load_player_data()
-
 # Form to add a new player
 with st.form("add_player_form"):
-    st.subheader("Añadir jugadores")
-    name = st.text_input("Nombre")
-    submit = st.form_submit_button("Añadir jugadores")
+    st.subheader("Añadir nuevo jugador")
+    name = st.text_input("Nombre del jugador")
+    submit = st.form_submit_button("Añadir jugador")
     
     if submit:
         if name and name not in player_df["Nombre"].values:
@@ -53,20 +38,17 @@ with st.form("add_player_form"):
                 "PP": 0,
                 "GF": 0,
                 "GC": 0,
-                "GInd": 0,
+                "GInd": 0
             }
             player_df = pd.concat([player_df, pd.DataFrame([new_row])], ignore_index=True)
-            save_player_data(player_df)
+
+            write_player_data(sheet_name, player_df.to_dict(orient="records"))
             st.success(f"Jugador '{name}' añadido.")
         elif name in player_df["Nombre"].values:
             st.warning("Ya existe el jugador.")
         else:
-            st.error("Añada un nombre.")
+            st.error("Ingresar nombre.")
 
-# Display the current player table
-st.subheader("Lista de Jugadores Actuales")
+st.subheader("Lista Actual de Jugadores")
 st.dataframe(
-    player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False)
-    ,hide_index=True
-    ,use_container_width=True
-)
+    player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False),hide_index=True,use_container_width=True)
