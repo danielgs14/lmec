@@ -8,7 +8,9 @@ from google.oauth2.service_account import Credentials
 service_account_filepath = "./.secrets/service_account.json"
 
 scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_file(service_account_filepath, scopes=scopes)
+
+creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"])
+
 client = gspread.authorize(creds)
 
 def get_sheet(sheet_name="Your Sheet Name"):
