@@ -53,6 +53,6 @@ def highlight_first(s):
     return ['background-color: #d4a017' if i == 0 else '' for i in range(len(s))]
 
 st.dataframe(
-    latest_snapshot.drop(columns="Delta_Puntos").style
+    latest_snapshot.drop(columns="delta_puntos").style
     .apply(highlight_first, axis=0)
 )
