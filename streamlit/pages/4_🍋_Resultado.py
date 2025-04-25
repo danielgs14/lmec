@@ -68,7 +68,7 @@ if st.button("Ingresar marcador"):
     write_player_data(player_sheet, player_df.to_dict(orient="records"))
 
     snapshot_df = player_df.copy()
-    snapshot_df["partido"] = pd.to_datetime("today").strftime("%Y-%m-%d")
+    snapshot_df["partido"] = pd.to_datetime("today").strftime("%Y-%m-%d, %H:%M")
     append_snapshot_data(snapshot_sheet, snapshot_df.to_dict(orient="records"))
 
     st.session_state.goal_counts = {player: 0 for player in player_df["Nombre"].tolist()}
