@@ -19,16 +19,16 @@ st.title("🏆Tabla General")
 st.subheader("Tabla")
 st.markdown("Esperar un minuto luego de ingresar resultados y refrescar.")
 
-player_data = read_player_data(player_sheet_name)
-player_df = pd.DataFrame(player_data)
+# player_data = read_player_data(player_sheet_name)
+# player_df = pd.DataFrame(player_data)
 snapshot_df = read_snapshot_data(snapshot_sheet_name) 
 
 
-if player_df.empty:
-    st.info("No hay datos disponibles.")
-else:
-    player_df = player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).reset_index(drop=True)
-    st.dataframe(player_df, hide_index=True, use_container_width=True)
+# if player_df.empty:
+#     st.info("No hay datos disponibles.")
+# else:
+#     player_df = player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).reset_index(drop=True)
+#     st.dataframe(player_df, hide_index=True, use_container_width=True)
 
 
 snapshot_df = snapshot_df.sort_values(by=["Nombre", "partido"])
@@ -48,11 +48,10 @@ def points_arrows(row):
         return f'{row["Puntos"]} ↔️'
 
 latest_snapshot["Puntos"] = latest_snapshot.apply(points_arrows, axis=1)
+latest_snapshot = latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).reset_index(drop=True)
 
-def highlight_first(s):
-    return ['background-color: #d4a017' if i == 0 else '' for i in range(len(s))]
+medals = ["🥇", "🥈", "🥉"]
+for i in range(min(3, len(latest_snapshot))):
+    latest_snapshot.at[i, "Nombre"] = f"{medals[i]} {latest_snapshot.at[i, 'Nombre']}"
 
-st.dataframe(
-    latest_snapshot.drop(columns="delta_puntos").style
-    .apply(highlight_first, axis=0)
-)
+st.dataframe(latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "partido"]), hide_index=True)
