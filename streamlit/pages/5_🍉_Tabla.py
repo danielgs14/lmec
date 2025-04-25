@@ -31,11 +31,11 @@ else:
     st.dataframe(player_df, hide_index=True, use_container_width=True)
 
 
-snapshot_df = snapshot_df.sort_values(by=["Nombre", "Fecha"])
+snapshot_df = snapshot_df.sort_values(by=["Nombre", "partido"])
 snapshot_df["delta_puntos"] = snapshot_df.groupby("Nombre")["Puntos"].diff()
-latest_date = snapshot_df["Fecha"].max()
+latest_date = snapshot_df["partido"].max()
 
-latest_snapshot = snapshot_df[snapshot_df["Fecha"] == latest_date].copy()
+latest_snapshot = snapshot_df[snapshot_df["partido"] == latest_date].copy()
 
 def points_arrows(row):
     if pd.isna(row["delta_puntos"]):
