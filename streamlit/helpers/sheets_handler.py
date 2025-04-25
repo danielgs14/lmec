@@ -98,7 +98,7 @@ def write_goals_data(sheet_name, data):
         sheet.append_row(row)
 
 @st.cache_data(ttl=60)
-def read_snapshot_data(sheet_name="Snapshot"):
+def read_snapshot_data(sheet_name):
     worksheet = get_sheet(sheet_name)
     data = worksheet.get_all_records()
     df = pd.DataFrame(data)
