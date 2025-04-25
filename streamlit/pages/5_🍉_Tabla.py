@@ -48,3 +48,11 @@ def points_arrows(row):
         return f'{row["Puntos"]} ↔️'
 
 latest_snapshot["Puntos"] = latest_snapshot.apply(points_arrows, axis=1)
+
+def highlight_first(s):
+    return ['background-color: #d4a017' if i == 0 else '' for i in range(len(s))]
+
+st.dataframe(
+    latest_snapshot.drop(columns="Delta_Puntos").style
+    .apply(highlight_first, axis=0)
+)
