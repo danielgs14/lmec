@@ -11,10 +11,11 @@ st.set_page_config(
 
 st.title("Tabla General")
 
-# Sheet names
+# sheets stuff
 player_sheet_name = "player_data"
 # snapshot_sheet_name = "player_snapshots" 
 
+# st stuff
 st.subheader("Tabla")
 
 player_data = read_player_data(player_sheet_name)

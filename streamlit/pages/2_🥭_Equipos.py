@@ -10,15 +10,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Google Sheet names
+# sheets stuff
 player_sheet_name = "player_data"
 match_teams_sheet_name = "match_teams"
 
-st.title("Equipos")
-
-# Load player names from Google Sheets
 player_data = read_player_data(player_sheet_name)
 player_df = pd.DataFrame(player_data)
+
+
+# st stuff
+st.title("Equipos")
 
 if player_df.empty:
     st.warning("No hay jugadores. Añádalos en 🥝 **Jugadores**")
@@ -26,11 +27,11 @@ if player_df.empty:
 
 player_names = player_df["Nombre"].tolist()
 
-# Select players for each team
+
 team1 = st.multiselect("Equipo 1", player_names, max_selections=6)
 team2 = st.multiselect(
     "Equipo 2",
-    [p for p in player_names if p not in team1],  # Exclude already selected
+    [p for p in player_names if p not in team1], 
     max_selections=6
 )
 

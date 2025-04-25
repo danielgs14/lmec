@@ -10,15 +10,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Sheet names
+# sheets stuff
 match_teams_sheet = "match_teams"
 personal_goals_sheet = "personal_goals"
 
-st.title("Goles")
-
-# Load team data from Google Sheets
 team_data = read_team_data(match_teams_sheet)
 team_df = pd.DataFrame(team_data)
+
+#st stuff
+
+st.title("Goles")
+
 
 if team_df.empty:
     st.warning("No ha escogido los equipos. Regrese a 🥭 Equipos para seleccionarlos.")
@@ -26,11 +28,9 @@ if team_df.empty:
 
 players = team_df["Nombre"].tolist()
 
-# Initialize or reset goal counts
 if "goal_counts" not in st.session_state or set(st.session_state.goal_counts.keys()) != set(players):
     st.session_state.goal_counts = {player: 0 for player in players}
 
-# Reset all goals button
 if st.button("Resetear goles"):
     for player in players:
         st.session_state.goal_counts[player] = 0
@@ -38,7 +38,6 @@ if st.button("Resetear goles"):
 
 st.subheader("Presione cada nombre para añadir un gol.")
 
-# Display goal buttons by team
 for team in team_df["Equipo"].unique():
     st.markdown(f"### {team}")
     team_players = team_df[team_df["Equipo"] == team]["Nombre"].tolist()
@@ -50,7 +49,6 @@ for team in team_df["Equipo"].unique():
                 st.session_state.goal_counts[player] += 1
             st.write(f"Goles: {st.session_state.goal_counts[player]}")
 
-# Show total goals per team
 team1_goals = sum(
     st.session_state.goal_counts.get(player, 0)
     for player in team_df[team_df["Equipo"] == "Equipo 1"]["Nombre"]
@@ -65,7 +63,6 @@ col1, col2 = st.columns(2)
 col1.metric("Equipo 1", f"{team1_goals} goles")
 col2.metric("Equipo 2", f"{team2_goals} goles")
 
-# Save to Google Sheets
 if st.button("Guardar Goles Individuales"):
     goal_df = pd.DataFrame([
         {"Nombre": player, "GInd": goals}

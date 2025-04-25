@@ -9,19 +9,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-
-# Define the Google Sheet name
+# sheet and df data
 sheet_name = "player_data"
-
-# Fetch player data from Google Sheets
 player_data = read_player_data(sheet_name)
 player_df = pd.DataFrame(player_data)
 
 # columns = ["Nombre", "Puntos", "PJ", "PG", "PP", "PE", "GF", "GC", "GInd"]
 
+#st stuff
 st.title("🍍 Jugadores")
 
-# Form to add a new player
+# new player form
 with st.form("add_player_form"):
     st.subheader("Añadir nuevo jugador")
     name = st.text_input("Nombre del jugador")

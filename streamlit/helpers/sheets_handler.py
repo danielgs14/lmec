@@ -15,7 +15,7 @@ def get_sheet(sheet_name="Your Sheet Name"):
     sheet = client.open(sheet_name).sheet1
     return sheet
 
-# @st.cache_data(ttl=60)
+@st.cache_data(ttl=60)
 def read_player_data(sheet_name):
     sheet = client.open(sheet_name).sheet1
     records = sheet.get_all_records()
@@ -51,7 +51,7 @@ def write_player_data(sheet_name, data):
     for row in cleaned_data:
         sheet.append_row(row)
 
-# @st.cache_data(ttl=60)
+@st.cache_data(ttl=60)
 def read_team_data(sheet_name):
     sheet = get_sheet(sheet_name)
     data = sheet.get_all_records()
@@ -72,7 +72,7 @@ def write_team_data(sheet_name, data):
     for row in data:
         sheet.append_row([row["Nombre"], row["Equipo"]])
 
-# @st.cache_data(ttl=60)
+@st.cache_data(ttl=60)
 def read_goals_data(sheet_name):
     sheet = get_sheet(sheet_name)
     data = sheet.get_all_records()
