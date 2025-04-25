@@ -21,7 +21,7 @@ def read_player_data(sheet_name):
     records = sheet.get_all_records()
     
     if not records:
-        headers = ["Nombre", "Puntos", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd"]
+        headers = ["Nombre", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
         sheet.append_row(headers)
         return pd.DataFrame(columns=headers)
     
@@ -35,17 +35,17 @@ def write_player_data(sheet_name, data):
     sheet = get_sheet(sheet_name)
     sheet.clear()
 
-    headers = ["Nombre", "Puntos", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd"]
+    headers = ["Nombre", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
     sheet.append_row(headers)
 
     cleaned_data = []
     for record in data:
         cleaned_record = []
         for value in record.values():
-            if pd.isna(value) or value == float('inf') or value == -float('inf'):
+            if pd.isna(value) or value in [float("inf"), -float("inf")]:
                 cleaned_record.append("")
             else:
-                cleaned_record.append(str(value))
+                cleaned_record.append(value)
         cleaned_data.append(cleaned_record)
     
     for row in cleaned_data:

@@ -29,14 +29,14 @@ with st.form("add_player_form"):
         if name and name not in player_df["Nombre"].values:
             new_row = {
                 "Nombre": name,
-                "Puntos": 0,
                 "PJ": 0,
                 "PG": 0,
                 "PE": 0,
                 "PP": 0,
                 "GF": 0,
                 "GC": 0,
-                "GInd": 0
+                "GInd": 0,
+                "Puntos": 0
             }
             player_df = pd.concat([player_df, pd.DataFrame([new_row])], ignore_index=True)
 
