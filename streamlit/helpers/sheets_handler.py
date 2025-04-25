@@ -97,6 +97,14 @@ def write_goals_data(sheet_name, data):
         row = [record.get("Nombre", ""), record.get("GInd", 0)]
         sheet.append_row(row)
 
+@st.cache_data(ttl=60)
+def read_snapshot_data(sheet_name="Snapshot"):
+    worksheet = get_sheet(sheet_name)
+    data = worksheet.get_all_records()
+    df = pd.DataFrame(data)
+
+    return df
+
 def append_snapshot_data(sheet_name, data):
     sheet = get_sheet(sheet_name)
     existing = sheet.get_all_records()
