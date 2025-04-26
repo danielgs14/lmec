@@ -44,7 +44,9 @@ medals = ["🥇", "🥈", "🥉"]
 for i in range(min(3, len(latest_snapshot))):
     latest_snapshot.at[i, "Nombre"] = f"{medals[i]} {latest_snapshot.at[i, 'Nombre']}"
 
+print(latest_snapshot.columns.tolist())
+
 st.dataframe(
-    latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "partido", "Equipo"]),
+    latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "Equipo", "partido"]),
     hide_index=True
 )
