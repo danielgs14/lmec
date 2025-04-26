@@ -18,7 +18,6 @@ st.title("🏆Tabla General")
 st.subheader("Tabla")
 st.markdown("Esperar un minuto luego de ingresar resultados y refrescar.")
 
-
 snapshot_df = pd.DataFrame(read_snapshot_data(snapshot_sheet_name))
 snapshot_df["partido"] = pd.to_datetime(snapshot_df["partido"], errors="coerce")
 
@@ -44,7 +43,18 @@ medals = ["🥇", "🥈", "🥉"]
 for i in range(min(3, len(latest_snapshot))):
     latest_snapshot.at[i, "Nombre"] = f"{medals[i]} {latest_snapshot.at[i, 'Nombre']}"
 
-print(latest_snapshot.columns.tolist())
+# filter_pj = st.checkbox("Mostrar solo jugadores con al menos 1 partido", value=False)
+# if filter_pj:
+#     latest_snapshot = latest_snapshot[latest_snapshot["PJ"] >= 1]
+
+# min_gind = st.slider(
+#     "Número mínimo de Goles Individuales (GInd)",
+#     min_value=0,
+#     max_value=int(latest_snapshot["GInd"].max()) if not latest_snapshot.empty else 0,
+#     value=0
+# )
+
+# latest_snapshot = latest_snapshot[latest_snapshot["GInd"] >= min_gind]
 
 st.dataframe(
     latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "Equipo", "partido"]),
