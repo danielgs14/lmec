@@ -89,13 +89,19 @@ def write_goals_data(sheet_name, data):
         raise ValueError("No data to write.")
     
     sheet = get_sheet(sheet_name)
-    
     sheet.clear()
-    sheet.append_row(["Nombre", "GInd"])
+    
+    # Now includes "Equipo"
+    sheet.append_row(["Nombre", "Equipo", "GInd"])
     
     for record in data:
-        row = [record.get("Nombre", ""), record.get("GInd", 0)]
+        row = [
+            record.get("Nombre", ""),
+            record.get("Equipo", ""),  # New: Team name
+            record.get("GInd", 0)
+        ]
         sheet.append_row(row)
+
 
 @st.cache_data(ttl=60)
 def read_snapshot_data(sheet_name):

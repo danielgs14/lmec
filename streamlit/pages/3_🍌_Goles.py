@@ -17,10 +17,8 @@ personal_goals_sheet = "personal_goals"
 team_data = read_team_data(match_teams_sheet)
 team_df = pd.DataFrame(team_data)
 
-#st stuff
-
+# st stuff
 st.title("Goles")
-
 
 if team_df.empty:
     st.warning("No ha escogido los equipos. Regrese a 🥭 Equipos para seleccionarlos.")
@@ -28,6 +26,7 @@ if team_df.empty:
 
 players = team_df["Nombre"].tolist()
 
+# Initialize goal counts
 if "goal_counts" not in st.session_state or set(st.session_state.goal_counts.keys()) != set(players):
     st.session_state.goal_counts = {player: 0 for player in players}
 
@@ -38,7 +37,9 @@ if st.button("Resetear goles"):
 
 st.subheader("Presione cada nombre para añadir un gol.")
 
-for team in team_df["Equipo"].unique():
+team_names = team_df["Equipo"].unique()
+
+for team in team_names:
     st.markdown(f"### {team}")
     team_players = team_df[team_df["Equipo"] == team]["Nombre"].tolist()
     cols = st.columns(6)
@@ -49,23 +50,24 @@ for team in team_df["Equipo"].unique():
                 st.session_state.goal_counts[player] += 1
             st.write(f"Goles: {st.session_state.goal_counts[player]}")
 
-team1_goals = sum(
-    st.session_state.goal_counts.get(player, 0)
-    for player in team_df[team_df["Equipo"] == "Equipo 1"]["Nombre"]
-)
-team2_goals = sum(
-    st.session_state.goal_counts.get(player, 0)
-    for player in team_df[team_df["Equipo"] == "Equipo 2"]["Nombre"]
-)
-
+# Dynamic team goal summaries
 st.markdown("### Goles por Equipo")
-col1, col2 = st.columns(2)
-col1.metric("Equipo 1", f"{team1_goals} goles")
-col2.metric("Equipo 2", f"{team2_goals} goles")
+cols = st.columns(len(team_names))
+
+for i, team in enumerate(team_names):
+    total_goals = sum(
+        st.session_state.goal_counts.get(player, 0)
+        for player in team_df[team_df["Equipo"] == team]["Nombre"]
+    )
+    cols[i].metric(team, f"{total_goals} goles")
 
 if st.button("Guardar Goles Individuales"):
     goal_df = pd.DataFrame([
-        {"Nombre": player, "GInd": goals}
+        {
+            "Nombre": player,
+            "Equipo": team_df[team_df["Nombre"] == player]["Equipo"].values[0],
+            "GInd": goals
+        }
         for player, goals in st.session_state.goal_counts.items()
     ])
     write_goals_data(personal_goals_sheet, goal_df.to_dict(orient="records"))

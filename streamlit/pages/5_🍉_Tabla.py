@@ -9,32 +9,22 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# sheets stuff
+# sheets
 player_sheet_name = "player_data"
-snapshot_sheet_name = "snapshot_data" 
+snapshot_sheet_name = "snapshot_data"
 
 # st stuff
 st.title("🏆Tabla General")
-
 st.subheader("Tabla")
 st.markdown("Esperar un minuto luego de ingresar resultados y refrescar.")
 
-# player_data = read_player_data(player_sheet_name)
-# player_df = pd.DataFrame(player_data)
-snapshot_df = read_snapshot_data(snapshot_sheet_name) 
 
-
-# if player_df.empty:
-#     st.info("No hay datos disponibles.")
-# else:
-#     player_df = player_df.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).reset_index(drop=True)
-#     st.dataframe(player_df, hide_index=True, use_container_width=True)
-
+snapshot_df = pd.DataFrame(read_snapshot_data(snapshot_sheet_name))
+snapshot_df["partido"] = pd.to_datetime(snapshot_df["partido"], errors="coerce")
 
 snapshot_df = snapshot_df.sort_values(by=["Nombre", "partido"])
 snapshot_df["delta_puntos"] = snapshot_df.groupby("Nombre")["Puntos"].diff()
 latest_date = snapshot_df["partido"].max()
-
 latest_snapshot = snapshot_df[snapshot_df["partido"] == latest_date].copy()
 
 def points_arrows(row):
@@ -54,4 +44,7 @@ medals = ["🥇", "🥈", "🥉"]
 for i in range(min(3, len(latest_snapshot))):
     latest_snapshot.at[i, "Nombre"] = f"{medals[i]} {latest_snapshot.at[i, 'Nombre']}"
 
-st.dataframe(latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "partido"]), hide_index=True)
+st.dataframe(
+    latest_snapshot.sort_values(by=["Puntos", "PG", "GInd", "GF"], ascending=False).drop(columns=["delta_puntos", "partido", "Equipo"]),
+    hide_index=True
+)

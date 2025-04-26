@@ -27,6 +27,9 @@ if player_df.empty:
 
 player_names = player_df["Nombre"].tolist()
 
+team1_name = st.text_input("Nombre para Equipo 1", value="Equipo 1")
+team2_name = st.text_input("Nombre para Equipo 2", value="Equipo 2")
+
 
 team1 = st.multiselect("Equipo 1", player_names, max_selections=6)
 team2 = st.multiselect(
@@ -41,7 +44,7 @@ else:
     if st.button("Guardar equipos."):
         match_df = pd.DataFrame({
             "Nombre": team1 + team2,
-            "Equipo": ["Equipo 1"] * 6 + ["Equipo 2"] * 6
+            "Equipo": [team1_name] * 6 + [team2_name] * 6
         })
         write_team_data(match_teams_sheet_name, match_df.to_dict(orient="records"))
         st.success("Equipos guardados para la mejenga.")
