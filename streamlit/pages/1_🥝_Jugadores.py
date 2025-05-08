@@ -40,7 +40,8 @@ with st.form("add_player_form"):
             }
             player_df = pd.concat([player_df, pd.DataFrame([new_row])], ignore_index=True)
 
-            write_player_data(sheet_name, player_df.to_dict(orient="records"))
+            write_player_data(sheet_name, [new_row], append=True)
+ 
             st.success(f"Jugador '{name}' añadido.")
         elif name in player_df["Nombre"].values:
             st.warning("Ya existe el jugador.")
@@ -75,5 +76,6 @@ else:
             player_df.at[idx, "GInd"] = new_GInd
 
             # Convert back to list of dicts and write
-            write_player_data(sheet_name, player_df.to_dict(orient="records"))
+            write_player_data(sheet_name, player_df.to_dict(orient="records"), append=True)
+            st.cache_data.clear()
             st.success("Jugador actualizado exitosamente.")

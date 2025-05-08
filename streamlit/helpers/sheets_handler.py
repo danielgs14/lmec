@@ -28,28 +28,39 @@ def read_player_data(sheet_name):
     return pd.DataFrame(records)
 
 
-def write_player_data(sheet_name, data):
+def write_player_data(sheet_name, data, append=False):
     if data is None or not data:
         raise ValueError("No data to write.")
     
     sheet = get_sheet(sheet_name)
-    sheet.clear()
-
     headers = ["Nombre", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
-    sheet.append_row(headers)
 
-    cleaned_data = []
-    for record in data:
-        cleaned_record = []
+    if append:
+        record = data[0]  # not data[-1]
+        cleaned_row = []
         for value in record.values():
             if pd.isna(value) or value in [float("inf"), -float("inf")]:
-                cleaned_record.append("")
+                cleaned_row.append("")
             else:
-                cleaned_record.append(value)
-        cleaned_data.append(cleaned_record)
-    
-    for row in cleaned_data:
-        sheet.append_row(row)
+                cleaned_row.append(value)
+        sheet.append_row(cleaned_row)
+    else:
+        sheet.clear()
+        sheet.append_row(headers)
+
+        cleaned_data = []
+        for record in data:
+            cleaned_record = []
+            for value in record.values():
+                if pd.isna(value) or value in [float("inf"), -float("inf")]:
+                    cleaned_record.append("")
+                else:
+                    cleaned_record.append(value)
+            cleaned_data.append(cleaned_record)
+
+        for row in cleaned_data:
+            sheet.append_row(row)
+
 
 @st.cache_data(ttl=60)
 def read_team_data(sheet_name):
