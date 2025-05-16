@@ -47,4 +47,5 @@ else:
             "Equipo": [team1_name] * 6 + [team2_name] * 6
         })
         write_team_data(match_teams_sheet_name, match_df.to_dict(orient="records"))
+        st.cache_data.clear()
         st.success("Equipos guardados para la mejenga.")
