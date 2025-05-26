@@ -28,38 +28,60 @@ def read_player_data(sheet_name):
     return pd.DataFrame(records)
 
 
+# def write_player_data(sheet_name, data, append=False):
+#     if data is None or not data:
+#         raise ValueError("No data to write.")
+    
+#     sheet = get_sheet(sheet_name)
+#     headers = ["Nombre", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
+
+#     if append:
+#         record = data[0]  # not data[-1]
+#         cleaned_row = []
+#         for value in record.values():
+#             if pd.isna(value) or value in [float("inf"), -float("inf")]:
+#                 cleaned_row.append("")
+#             else:
+#                 cleaned_row.append(value)
+#         sheet.append_row(cleaned_row)
+#     else:
+#         sheet.clear()
+#         sheet.append_row(headers)
+
+#         cleaned_data = []
+#         for record in data:
+#             cleaned_record = []
+#             for value in record.values():
+#                 if pd.isna(value) or value in [float("inf"), -float("inf")]:
+#                     cleaned_record.append("")
+#                 else:
+#                     cleaned_record.append(value)
+#             cleaned_data.append(cleaned_record)
+
+#         for row in cleaned_data:
+#             sheet.append_row(row)
+
 def write_player_data(sheet_name, data, append=False):
     if data is None or not data:
         raise ValueError("No data to write.")
     
     sheet = get_sheet(sheet_name)
     headers = ["Nombre", "PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
+    
+    df = pd.DataFrame(data)
+    
+    numeric_cols = ["PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
+    df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors="coerce").fillna(0).astype(int)
 
     if append:
-        record = data[0]  # not data[-1]
-        cleaned_row = []
-        for value in record.values():
-            if pd.isna(value) or value in [float("inf"), -float("inf")]:
-                cleaned_row.append("")
-            else:
-                cleaned_row.append(value)
-        sheet.append_row(cleaned_row)
+        record = df.iloc[0].to_dict() 
+        sheet.append_row([record[col] for col in headers])
     else:
         sheet.clear()
         sheet.append_row(headers)
+        for _, row in df.iterrows():
+            sheet.append_row([row[col] for col in headers])
 
-        cleaned_data = []
-        for record in data:
-            cleaned_record = []
-            for value in record.values():
-                if pd.isna(value) or value in [float("inf"), -float("inf")]:
-                    cleaned_record.append("")
-                else:
-                    cleaned_record.append(value)
-            cleaned_data.append(cleaned_record)
-
-        for row in cleaned_data:
-            sheet.append_row(row)
 
 
 @st.cache_data(ttl=60)
@@ -108,7 +130,7 @@ def write_goals_data(sheet_name, data):
     for record in data:
         row = [
             record.get("Nombre", ""),
-            record.get("Equipo", ""),  # New: Team name
+            record.get("Equipo", ""), 
             record.get("GInd", 0)
         ]
         sheet.append_row(row)
@@ -124,8 +146,17 @@ def read_snapshot_data(sheet_name):
 
 def append_snapshot_data(sheet_name, data):
     sheet = get_sheet(sheet_name)
+
+    df = pd.DataFrame(data)
+
+    numeric_cols = ["PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
+
     existing = sheet.get_all_records()
     if not existing:
-        sheet.append_row(list(data[0].keys()))
-    for row in data:
-        sheet.append_row(list(row.values()))
+        sheet.append_row(df.columns.tolist())
+
+    for _, row in df.iterrows():
+        sheet.append_row(row.tolist())
