@@ -156,7 +156,19 @@ def append_snapshot_data(sheet_name, data):
 
     existing = sheet.get_all_records()
     if not existing:
+        df.insert(0, "Jornada", 1)
         sheet.append_row(df.columns.tolist())
+        for _, row in df.iterrows():
+            sheet.append_row(row.tolist())
+        return
+
+    existing_df = pd.DataFrame(existing)
+    if "Jornada" in existing_df.columns:
+        last_jornada = existing_df["Jornada"].max()
+    else:
+        last_jornada = 0
+
+    df.insert(0, "Jornada", last_jornada + 1)
 
     for _, row in df.iterrows():
         sheet.append_row(row.tolist())
