@@ -146,7 +146,6 @@ def read_snapshot_data(sheet_name):
 
 def append_snapshot_data(sheet_name, data):
     sheet = get_sheet(sheet_name)
-
     df = pd.DataFrame(data)
 
     numeric_cols = ["PJ", "PG", "PE", "PP", "GF", "GC", "GInd", "Puntos"]
@@ -155,20 +154,20 @@ def append_snapshot_data(sheet_name, data):
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
 
     existing = sheet.get_all_records()
+
     if not existing:
-        df.insert(0, "Jornada", 1)
-        sheet.append_row(df.columns.tolist())
-        for _, row in df.iterrows():
-            sheet.append_row(row.tolist())
-        return
-
-    existing_df = pd.DataFrame(existing)
-    if "Jornada" in existing_df.columns:
-        last_jornada = existing_df["Jornada"].max()
-    else:
         last_jornada = 0
+    else:
+        existing_df = pd.DataFrame(existing)
+        if "Jornada" in existing_df.columns:
+            last_jornada = existing_df["Jornada"].max()
+        else:
+            last_jornada = 0
 
-    df.insert(0, "Jornada", last_jornada + 1)
+    df["Jornada"] = int(last_jornada + 1)
+
+    if not existing:
+        sheet.append_row(df.columns.tolist())
 
     for _, row in df.iterrows():
         sheet.append_row(row.tolist())
